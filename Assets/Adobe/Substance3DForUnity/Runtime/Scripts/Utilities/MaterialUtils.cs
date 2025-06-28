@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Adobe.Substance
 {
@@ -272,6 +273,9 @@ namespace Adobe.Substance
 
         public static Shader GetStandardShader()
         {
+            if (GraphicsSettings.renderPipelineAsset?.defaultMaterial != null)
+                return GraphicsSettings.renderPipelineAsset.defaultMaterial.shader;
+
             if (PluginPipelines.IsHDRP())
                 return Shader.Find(HDRPShaderName);
             else if (PluginPipelines.IsURP())
@@ -336,7 +340,7 @@ namespace Adobe.Substance
                 material.SetFloat("_UVBase", 5);
                 material.SetFloat("_UVEmissive", 5);
                 material.SetFloat("_TexWorldScale", 100);
-                material.EnableKeyword("_MAPPING_PLANAR");
+                material.EnableKeyword("_MAPPING_TRIPLANAR");
                 material.EnableKeyword("_EMISSIVE_MAPPING_TRIPLANAR");
                 material.mainTextureScale = new Vector2(1f / physicalSize.x, 1f / physicalSize.y);
             }
@@ -345,7 +349,7 @@ namespace Adobe.Substance
                 material.SetFloat("_UVBase", 0);
                 material.SetFloat("_UVEmissive", 0);
                 material.SetFloat("_TexWorldScale", 1);
-                material.DisableKeyword("_MAPPING_PLANAR");
+                material.DisableKeyword("_MAPPING_TRIPLANAR");
                 material.DisableKeyword("_EMISSIVE_MAPPING_TRIPLANAR");
                 material.mainTextureScale = new Vector2(1, 1);
             }
